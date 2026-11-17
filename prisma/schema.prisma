@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  TEACHER
+  PARENT
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  passwordHash String
+  role         Role
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  parent       Parent?
+  sessions     AuthSession[]
+  auditEvents  AuditEvent[]
+}
+
+model Parent {
+  id             String          @id @default(uuid()) @db.Uuid
+  userId         String          @unique @db.Uuid
+  fullName       String
+  whatsappNumber String?
+  user           User            @relation(fields: [userId], references: [id], onDelete: Restrict)
+  students       StudentParent[]
+  createdAt      DateTime        @default(now())
+}
+
+model Student {
+  id        String          @id @default(uuid()) @db.Uuid
+  fullName  String
+  isActive  Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  parents   StudentParent[]
+}
+
+model StudentParent {
+  studentId String   @db.Uuid
+  parentId  String   @db.Uuid
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  parent    Parent   @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([studentId, parentId])
+  @@index([parentId])
+}
+
+model AuthSession {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model AuditEvent {
+  id        String   @id @default(uuid()) @db.Uuid
+  actorId   String?  @db.Uuid
+  action    String
+  entity    String
+  entityId  String?
+  createdAt DateTime @default(now())
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([entity, entityId])
+}

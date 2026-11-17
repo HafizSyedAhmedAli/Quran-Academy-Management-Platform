@@ -1,0 +1,15 @@
+name: quran-academy-test
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: quran-academy-db-test
+    environment:
+      POSTGRES_USER: ${TEST_DB_USER}
+      POSTGRES_PASSWORD: ${TEST_DB_PASSWORD}
+      POSTGRES_DB: quran_academy_test
+    ports: ['5433:5432']
+    tmpfs: [/var/lib/postgresql/data] # disposable, wiped on stop
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${TEST_DB_USER} -d quran_academy_test']
+      interval: 5s
+      retries: 10

@@ -1,0 +1,17 @@
+name: quran-academy-dev
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: quran-academy-db-dev
+    environment:
+      POSTGRES_USER: ${DEV_DB_USER}
+      POSTGRES_PASSWORD: ${DEV_DB_PASSWORD}
+      POSTGRES_DB: quran_academy_dev
+    ports: ['5432:5432']
+    volumes: [quran_academy_dev_data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DEV_DB_USER} -d quran_academy_dev']
+      interval: 5s
+      retries: 10
+volumes:
+  quran_academy_dev_data:
