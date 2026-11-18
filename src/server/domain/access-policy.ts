@@ -9,3 +9,7 @@ export function canViewStudent(actor: Actor, linkedParentIds: readonly string[])
 export function canModifyAcademicRecords(actor: Actor): boolean {
   return actor.role === 'TEACHER';
 }
+
+export function canManageStudents(actor: Actor): boolean {
+  return actor.role === 'TEACHER';
+}

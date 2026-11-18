@@ -45,15 +45,26 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     needs: quality
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: ci_test
+          POSTGRES_PASSWORD: ci_test_pw
+          POSTGRES_DB: quran_academy_test
+        ports: ['5433:5432']
+        options: >-
+          --health-cmd "pg_isready -U ci_test -d quran_academy_test"
+          --health-interval 5s --health-retries 10
     env:
       SESSION_SECRET: ci-secret-min-32-chars-long-xxxxxxxx
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
-      - run: bunx prisma generate
+      - run: bunx prisma migrate deploy
       - run: bunx playwright install --with-deps chromium
-      - run: bunx bddgen && bunx playwright test --grep-invert @wip
+      - run: bunx bddgen && bunx playwright test
 
   build:
     runs-on: ubuntu-latest

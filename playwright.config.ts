@@ -8,6 +8,8 @@ const testDir = defineBddConfig({
 
 export default defineConfig({
   testDir,
+  workers: 1,
+  fullyParallel: false,
   use: { baseURL: 'http://localhost:3000' },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {

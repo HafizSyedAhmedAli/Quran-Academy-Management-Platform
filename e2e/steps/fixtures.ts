@@ -1,6 +1,7 @@
 import { test as base, createBdd } from 'playwright-bdd';
 
 export type World = {
+  suffix: string;
   email: string;
   parentId?: string;
   ownStudentId?: string;
@@ -8,11 +9,15 @@ export type World = {
   otherStudentName?: string;
   lastStatus?: number;
   lastBody?: string;
+  teacherEmail?: string;
+  parentName?: string;
+  parentEmail?: string;
 };
 
 export const test = base.extend<{ world: World }>({
   world: async ({}, use) => {
-    await use({ email: `parent-${Date.now()}-${Math.random().toString(36).slice(2)}@example.com` });
+    const suffix = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    await use({ suffix, email: `parent-${suffix}@example.com` });
   },
 });
 

@@ -3,6 +3,8 @@ import { listStudentsForActor } from '@/server/students/student-queries';
 import { StudentList } from '@/entities/student';
 import { LogoutButton } from '@/features/authentication';
 
+export const instant = false;
+
 export default async function ParentHome() {
   const actor = await requireActor('PARENT');
   const students = await listStudentsForActor(actor);

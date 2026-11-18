@@ -1,5 +1,6 @@
 import { prisma } from '@/server/db/prisma';
 import { hashPassword } from '@/server/auth/password';
+import type { Actor } from '@/server/domain/access-policy';
 
 export const PASSWORD = 'Passw0rd!Test';
 
@@ -29,3 +30,10 @@ export async function createStudent(fullName: string, parentIds: string[] = []) 
   }
   return student;
 }
+
+export const teacherActor = (u: { id: string }): Actor => ({ userId: u.id, role: 'TEACHER' });
+export const parentActor = (u: { id: string }, p: { id: string }): Actor => ({
+  userId: u.id,
+  role: 'PARENT',
+  parentId: p.id,
+});

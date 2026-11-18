@@ -3,6 +3,8 @@ import { requireActor } from '@/server/auth/current-actor';
 import { NotFoundError } from '@/server/domain/errors';
 import { getStudentForActor, type StudentView } from '@/server/students/student-queries';
 
+export const instant = false;
+
 export default async function ParentStudentPage({ params }: { params: Promise<{ id: string }> }) {
   const actor = await requireActor('PARENT');
   const { id } = await params;

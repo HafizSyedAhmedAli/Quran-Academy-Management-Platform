@@ -1,15 +1,22 @@
+import Link from 'next/link';
 import { requireActor } from '@/server/auth/current-actor';
-import { listStudentsForActor } from '@/server/students/student-queries';
-import { StudentList } from '@/entities/student';
 import { LogoutButton } from '@/features/authentication';
 
+export const instant = false;
+
 export default async function TeacherHome() {
-  const actor = await requireActor('TEACHER');
-  const students = await listStudentsForActor(actor);
+  await requireActor('TEACHER');
   return (
     <main className="mx-auto max-w-2xl space-y-4 p-8">
       <h1 className="text-2xl font-semibold">Teacher dashboard</h1>
-      <StudentList students={students} />
+      <nav className="space-x-4">
+        <Link className="underline" href="/teacher/students">
+          Students
+        </Link>
+        <Link className="underline" href="/teacher/parents">
+          Parents
+        </Link>
+      </nav>
       <LogoutButton />
     </main>
   );
