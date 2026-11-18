@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "bun run db:dev:up; bun run db:dev:migrate; bun run db:dev:seed; next dev",
     "build": "next build",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
