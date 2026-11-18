@@ -5,14 +5,12 @@ Feature: Parent student data isolation
     When I open the home page
     Then I see the page load successfully
 
-  @wip
   Scenario: Parent views their associated student
     Given a parent is authenticated
     And the student is associated with that parent
     When the parent requests the student dashboard
     Then the application displays that student's information
 
-  @wip
   Scenario: Parent attempts to access another student's information
     Given a parent is authenticated
     And a student is not associated with that parent
