@@ -2,7 +2,12 @@ import { NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import { currentActor } from '@/server/auth/current-actor';
 import type { Actor } from '@/server/domain/access-policy';
-import { ConflictError, ForbiddenError, NotFoundError } from '@/server/domain/errors';
+import {
+  ConflictError,
+  ForbiddenError,
+  NotFoundError,
+  ValidationError,
+} from '@/server/domain/errors';
 
 function originHost(origin: string): string | null {
   try {
@@ -41,5 +46,6 @@ export function errorResponse(e: unknown): NextResponse {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   if (e instanceof NotFoundError) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   if (e instanceof ConflictError) return NextResponse.json({ error: e.message }, { status: 409 });
+  if (e instanceof ValidationError) return NextResponse.json({ error: e.message }, { status: 400 });
   throw e;
 }

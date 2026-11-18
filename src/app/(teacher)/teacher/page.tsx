@@ -16,6 +16,9 @@ export default async function TeacherHome() {
         <Link className="underline" href="/teacher/parents">
           Parents
         </Link>
+        <Link className="underline" href="/teacher/schedule">
+          Upcoming classes
+        </Link>
       </nav>
       <LogoutButton />
     </main>

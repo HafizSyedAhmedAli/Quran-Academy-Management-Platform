@@ -41,6 +41,10 @@ export default async function TeacherStudentPage({ params }: { params: Promise<{
       <h1 className="text-2xl font-semibold">{student.fullName}</h1>
       <p data-testid="student-status">{student.isActive ? 'Active' : 'Inactive'}</p>
 
+      <Link className="underline" href={`/teacher/students/${student.id}/schedule`}>
+        Manage schedule
+      </Link>
+
       <EditStudentForm student={student} />
       <StudentActiveToggle student={student} />
 

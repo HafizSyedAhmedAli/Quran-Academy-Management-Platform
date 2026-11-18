@@ -13,13 +13,13 @@ enum Role {
 }
 
 model User {
-  id           String   @id @default(uuid()) @db.Uuid
-  email        String   @unique
+  id           String        @id @default(uuid()) @db.Uuid
+  email        String        @unique
   passwordHash String
   role         Role
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   parent       Parent?
   sessions     AuthSession[]
   auditEvents  AuditEvent[]
@@ -36,12 +36,13 @@ model Parent {
 }
 
 model Student {
-  id        String          @id @default(uuid()) @db.Uuid
-  fullName  String
-  isActive  Boolean         @default(true)
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  parents   StudentParent[]
+  id             String          @id @default(uuid()) @db.Uuid
+  fullName       String
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  parents        StudentParent[]
+  classSchedules ClassSchedule[]
 }
 
 model StudentParent {
@@ -76,4 +77,58 @@ model AuditEvent {
   actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
 
   @@index([entity, entityId])
+}
+
+enum SessionStatus {
+  SCHEDULED
+  CANCELLED
+}
+
+model ClassSchedule {
+  id              String    @id @default(uuid()) @db.Uuid
+  studentId       String    @db.Uuid
+  weekday         Int // ISO: 1 = Monday ... 7 = Sunday
+  startMinute     Int // minutes after local midnight
+  durationMinutes Int
+  timezone        String    @default("Asia/Karachi")
+  effectiveFrom   DateTime  @db.Date
+  effectiveTo     DateTime? @db.Date // inclusive, null = open-ended
+  createdAt       DateTime  @default(now())
+
+  student    Student                  @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  sessions   ClassSession[]
+  exceptions ClassScheduleException[]
+
+  @@unique([studentId, weekday, startMinute, effectiveFrom])
+  @@unique([id, studentId])
+  @@index([studentId])
+}
+
+model ClassSession {
+  id         String        @id @default(uuid()) @db.Uuid
+  scheduleId String        @db.Uuid
+  studentId  String        @db.Uuid
+  localDate  DateTime      @db.Date
+  startsAt   DateTime      @db.Timestamptz(3)
+  endsAt     DateTime      @db.Timestamptz(3)
+  status     SessionStatus @default(SCHEDULED)
+  createdAt  DateTime      @default(now())
+
+  schedule ClassSchedule @relation(fields: [scheduleId, studentId], references: [id, studentId], onDelete: Restrict)
+
+  @@unique([scheduleId, localDate])
+  @@index([studentId, startsAt])
+  @@index([startsAt])
+}
+
+model ClassScheduleException {
+  id         String   @id @default(uuid()) @db.Uuid
+  scheduleId String   @db.Uuid
+  localDate  DateTime @db.Date
+  reason     String?
+  createdAt  DateTime @default(now())
+
+  schedule ClassSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+  @@unique([scheduleId, localDate])
 }

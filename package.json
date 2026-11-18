@@ -20,7 +20,7 @@
     "test": "vitest run --config vitest.config.ts",
     "test:integration": "dotenv-cli -e .env.test -- vitest run --config vitest.integration.config.ts",
     "test:e2e": "dotenv-cli -e .env.test -- bddgen && dotenv-cli -e .env.test -- playwright test",
-    "test:e2e:headed": "dotenv-cli -e .env.test -- bddgen && dotenv-cli -e .env.test -- playwright test --headed",
+    "test:e2e:headed": "dotenv-cli -e .env.test -- bddgen && dotenv-cli -e .env.test -- playwright test --headed --workers=1",
     "test:e2e:wip": "dotenv-cli -e .env.test -- bddgen && dotenv-cli -e .env.test -- playwright test --grep-invert @wip",
     "db:dev:seed": "dotenv-cli -e .env -- bun scripts/seed.ts"
   },

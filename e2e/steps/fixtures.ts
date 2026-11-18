@@ -12,6 +12,7 @@ export type World = {
   teacherEmail?: string;
   parentName?: string;
   parentEmail?: string;
+  studentNames?: string[];
 };
 
 export const test = base.extend<{ world: World }>({
