@@ -1,5 +1,9 @@
 Feature: Parent student data isolation
 
+  As a parent
+  I want to access only the records of students associated with my account
+  So that other students' personal and academic data remains private
+
   Scenario: Application is reachable
     Given the application is running
     When I open the home page
